@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <link rel="stylesheet" href="/css/whiteboard.css" >
+      <script type="text/javascript" src="/js/draw.js" ></script>
+      <script type="text/javascript" src="/js/world.js" ></script>
+      <script type="text/javascript" src="/js/ws.js" ></script>
+   </head>
+<body>
+<button id="pen_black"><img src="/images/pen_black.png"></button>
+<button id="pen_blue"><img src="/images/pen_blue.png"></button>
+<button id="pen_green"><img src="/images/pen_green.png"></button>
+<button id="pen_red"><img src="/images/pen_red.png"></button>
+<button id="clean_brush"><img src="/images/clean_brush.png"></button>
+
+<canvas id="board" width="1000" height="500"></canvas>
+<br/>
+<button id="training">Training</button>
+<button id="clear">Clear</button>
+<script>
+var board=document.getElementById("board")
+var world = new World(board)
+board.addEventListener("mousedown", function(event) {
+   world.mousedown=true
+   world.textmode="normal"
+   world.lastx=event.offsetX
+   world.lasty=event.offsetY
+   sendPosition(uid,event.offsetX,event.offsetY,"start",world.curshape)
+   })
+board.addEventListener("mouseup", function(event) {
+   world.mousedown=false
+   sendPosition(uid,event.offsetX,event.offsetY,(world.trainingMode ? "train":"draw"),world.curshape)
+   })
+board.addEventListener("mousemove", function(event) {
+   if (world.mousedown) {
+      world.localsnake.move(event.offsetX,event.offsetY)
+      sendPosition(uid,event.offsetX,event.offsetY,"move",world.curshape)
+   }
+    })
+window.addEventListener("keydown", function(event) {
+   if (event.key.length==1) {
+      let x = world.lastx
+      let y = world.lasty
+      let textwidth=world.localsnake.keypressed(event.key,x,y,world.textmode)
+      keyPressed(uid,event.key,x,y,world.textmode)
+      world.lastx+=textwidth+1
+      }
+   else {
+      world.changeTextMode(event.key)
+      event.preventDefault()
+      } 
+    })
+callback=world
+
+document.getElementById("training").onclick = function() {
+   world.trainingMode=true
+   getRequest("/chooseshape","json")
+         .then(shape => {
+            world.curshape=shape.shape
+            console.log(shape)
+          } )
+}
+document.getElementById("clear").onclick = function() {
+   world.trainingMode=false
+   world.clear()
+}
+</script>
+
+</body>
+</html>
