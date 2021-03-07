@@ -50,6 +50,7 @@ class ShapeServer(object):
             if msg["action"]=="draw" and len(self.drawing[curuid])>5:
                 shape=self.shapeGenerator.guess_shape(self.drawing[curuid],self.shapes[curuid])
                 shape["uid"]=curuid
+                shape["color"]=msg["color"]
                 self.shapes[curuid].append(shape)
                 await self.send_all_users(shape)
 

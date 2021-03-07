@@ -3,7 +3,8 @@ class World {
    constructor (board) {
       this.canvas = board
       this.context = this.canvas.getContext('2d')
-      this.localsnake= new Drawing(this.context,'#00AA00')
+      this.color='#00AA00'
+      this.localsnake= new Drawing(this.context,this.color)
       this.remotedraw=[]
       this.mousedown=false
       this.trainingMode = false
@@ -13,16 +14,16 @@ class World {
       this.textmode="normal"
    }
 
-   move(uid,x,y) {
+   move(uid,x,y,color) {
       if(!(uid in this.remotedraw)) {
-         this.remotedraw[uid]=new Drawing(this.context,'#AA0000')
+         this.remotedraw[uid]=new Drawing(this.context,color)
       }
-      this.remotedraw[uid].move(x,y)
+      this.remotedraw[uid].move(x,y,color)
    }
 
    keypressed(uid,key,x,y,textmode) {
       if(!(uid in this.remotedraw)) {
-         this.remotedraw[uid]=new Drawing(this.context,'#AA0000')
+         this.remotedraw[uid]=new Drawing(this.context,this.color)
       }
       this.remotedraw[uid].keypressed(key,x,y,textmode)
    }
@@ -34,15 +35,14 @@ class World {
    clean(uid) {
       if (this.trainingMode)
          this.clear()
-      else
-         this.localsnake.clean()
+      this.localsnake.clean()
       if(uid in this.remotedraw)
             this.remotedraw[uid].clean()
    }
 
    shape(msg) {
       if(!(msg.uid in this.remotedraw)) {
-         this.remotedraw[msg.uid]=new Drawing(this.context,'#AA0000')
+         this.remotedraw[msg.uid]=new Drawing(this.context,msg.color)
       }
       this.remotedraw[msg.uid].shape(msg)
    }

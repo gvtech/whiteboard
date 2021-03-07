@@ -18,8 +18,8 @@ class Drawing{
          }
  	}
 
-   move(x,y) {
-      this.draw(x,y,this.color)
+   move(x,y,color) {
+      this.draw(x,y,color)
       this.snake.push([x,y])
       }
 
@@ -56,11 +56,12 @@ class Drawing{
             }
          this.context.stroke()
          }
+      this.snake=[]
       }
 
    shape(s) {
       this.context.beginPath()
-      this.context.strokeStyle = this.color
+      this.context.strokeStyle = s.color
       this.context.lineWidth = 3
       if (s.shape=="rectangle") {
          this.context.strokeRect(s.x, s.y, s.dx, s.dy) 
@@ -81,6 +82,14 @@ class Drawing{
       else if (s.shape=="vline") {
          this.context.moveTo(s.x, s.y)
          this.context.lineTo(s.x, s.y+s.dy)
+         }
+      else if (s.shape=="upline") {
+         this.context.moveTo(s.x, s.y+s.dy)
+         this.context.lineTo(s.x+s.dx, s.y)
+         }
+      else if (s.shape=="downline") {
+         this.context.moveTo(s.x, s.y)
+         this.context.lineTo(s.x+s.dx, s.y+s.dy)
          }
       else if (s.shape=="sigma") {
          this.context.moveTo(s.x+s.dx, s.y)

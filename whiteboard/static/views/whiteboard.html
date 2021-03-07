@@ -25,16 +25,16 @@ board.addEventListener("mousedown", function(event) {
    world.textmode="normal"
    world.lastx=event.offsetX
    world.lasty=event.offsetY
-   sendPosition(uid,event.offsetX,event.offsetY,"start",world.curshape)
+   sendPosition(uid,event.offsetX,event.offsetY,"start",world.curshape,world.color)
    })
 board.addEventListener("mouseup", function(event) {
    world.mousedown=false
-   sendPosition(uid,event.offsetX,event.offsetY,(world.trainingMode ? "train":"draw"),world.curshape)
+   sendPosition(uid,event.offsetX,event.offsetY,(world.trainingMode ? "train":"draw"),world.curshape,world.color)
    })
 board.addEventListener("mousemove", function(event) {
    if (world.mousedown) {
-      world.localsnake.move(event.offsetX,event.offsetY)
-      sendPosition(uid,event.offsetX,event.offsetY,"move",world.curshape)
+      world.localsnake.move(event.offsetX,event.offsetY,world.color)
+      sendPosition(uid,event.offsetX,event.offsetY,"move",world.curshape,world.color)
    }
     })
 window.addEventListener("keydown", function(event) {
@@ -52,8 +52,16 @@ window.addEventListener("keydown", function(event) {
     })
 callback=world
 
+const colors=["black","green","red","blue"]
+colors.forEach( color => 
+   document.getElementById("pen_"+color).onclick = function() {
+      world.color=color
+      }
+   )
+
 document.getElementById("training").onclick = function() {
    world.trainingMode=true
+   world.clear()
    getRequest("/chooseshape","json")
          .then(shape => {
             world.curshape=shape.shape

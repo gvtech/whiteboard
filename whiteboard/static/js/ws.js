@@ -38,7 +38,7 @@ window.onload = function() {
          else
             if(callback) {
                if (msg["action"]=="move") {
-                  callback.move(msg["uid"],msg["x"],msg["y"])
+                  callback.move(msg["uid"],msg["x"],msg["y"],msg["color"])
                }
                else if (msg["action"]=="keypressed") {
                   callback.keypressed(msg["uid"],msg["key"],msg["x"],msg["y"],msg["textmode"])
@@ -59,9 +59,9 @@ window.onload = function() {
    }
 }
 
-function sendPosition(uid,x,y,action,shape) {
+function sendPosition(uid,x,y,action,shape,color) {
    if (isopen) {
-      socket.send(JSON.stringify({"uid":uid,"x":x,"y":y,"action":action,"shape":shape}))
+      socket.send(JSON.stringify({"uid":uid,"x":x,"y":y,"action":action,"shape":shape,"color":color}))
       console.log("Position sent.")
    } else {
       console.log("Connection not opened.")

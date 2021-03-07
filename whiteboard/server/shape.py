@@ -24,6 +24,8 @@ class ShapeGenerator(object):
                 {"shape":"elipse","x":100,"y":100,"dx":50,"dy":200},
                 {"shape":"vline","x":100,"y":100,"dx":0,"dy":100},
                 {"shape":"hline","x":100,"y":100,"dx":200,"dy":0},
+                {"shape":"upline","x":100,"y":100,"dx":100,"dy":100},
+                {"shape":"downline","x":100,"y":100,"dx":100,"dy":100},
                 {"shape":"sigma","x":100,"y":100,"dx":80,"dy":100},
                 {"shape":"leftbracket","x":100,"y":100,"dx":20,"dy":50},
                 {"shape":"rightbracket","x":100,"y":100,"dx":20,"dy":50},
@@ -40,6 +42,12 @@ class ShapeGenerator(object):
             ("hline","leftarrow"):self.vcenter,
             ("vline","uparrow"):self.hcenter,
             ("vline","downarrow"):self.hcenter,
+            ("vline","hline"):self.connect,
+            ("vline","downline"):self.connect,
+            ("hline","vline"):self.connect,
+            ("hline","upline"):self.connect,
+            ("rightarrow","rightarrow"):self.resize,
+            ("leftarrow","leftarrow"):self.resize,
             ("leftbracket","rightbracket"):self.resize
         }
         self.model=None
@@ -54,6 +62,7 @@ class ShapeGenerator(object):
 
     def chooseshape(self):
         shape=sample(self.shapeList,1)[0]
+        shape["color"]="black"
         print("choosen shape ",shape)
         return shape
 
@@ -102,6 +111,16 @@ class ShapeGenerator(object):
             shape["dy"]=prevShape["dy"] 
         if abs(shape["dx"]-prevShape["dx"])<grid:
             shape["dx"]=prevShape["dx"] 
+
+    def connect(self,shape,prevShape):
+        if abs(shape["y"]-prevShape["y"])<grid:
+            shape["y"]=prevShape["y"] 
+        if abs(shape["x"]-prevShape["x"])<grid:
+            shape["x"]=prevShape["x"] 
+        if abs(shape["x"]-(prevShape["x"]+prevShape["dx"]))<grid:
+            shape["x"]=prevShape["x"]+prevShape["dx"] 
+        if abs(shape["y"]-(prevShape["y"]+prevShape["dy"]))<grid:
+            shape["y"]=prevShape["y"]+prevShape["dy"] 
 
     def align_shape(self,shape,prevShape):
         couple=(prevShape["shape"],shape["shape"])
