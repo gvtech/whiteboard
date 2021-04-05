@@ -47,7 +47,7 @@ class World {
       this.remotedraw[msg.uid].shape(msg)
    }
 
-   changeTextMode(key) {
+   commandKey(key) {
       if (key=="ArrowUp") {
          if (this.textmode=="normal")
             this.textmode="exponent"
@@ -59,6 +59,12 @@ class World {
             this.textmode="normal"
          else if (this.textmode=="normal")
             this.textmode="indice"
+
+      }
+      else if (key=="Backspace") {
+
+      }
+      else if (key=="Escape") {
 
       }
    }

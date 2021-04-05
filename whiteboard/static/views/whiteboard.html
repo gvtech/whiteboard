@@ -12,6 +12,8 @@
 <button id="pen_green"><img src="/images/pen_green.png"></button>
 <button id="pen_red"><img src="/images/pen_red.png"></button>
 <button id="clean_brush"><img src="/images/clean_brush.png"></button>
+<input id="board_link" type="text" value=""></input>
+<button id="copy_link">Copy</button>
 
 <canvas id="board" width="1000" height="500"></canvas>
 <br/>
@@ -46,7 +48,7 @@ window.addEventListener("keydown", function(event) {
       world.lastx+=textwidth+1
       }
    else {
-      world.changeTextMode(event.key)
+      world.commandKey(event.key)
       event.preventDefault()
       } 
     })
@@ -72,6 +74,15 @@ document.getElementById("clear").onclick = function() {
    world.trainingMode=false
    world.clear()
 }
+
+document.getElementById("copy_link").onclick = function() {
+        let copyText = document.querySelector("#board_link");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+    }
+
+
 </script>
 
 </body>

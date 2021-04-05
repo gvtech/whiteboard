@@ -26,7 +26,33 @@ window.onload = function() {
       console.log("Connected!")
       isopen = true
       socket.send('{"name":"whiteboard"}')
-   }
+      let path=window.location.href
+      let pos=path.indexOf("?")
+      if (pos>0) {
+         let boardId=path.substring(pos+1)
+         console.log("Loading board ID:"+boardId)
+         getRequest("/openboard/"+boardId,"json")
+            .then(shapeList => { 
+                  shapeList.forEach(
+                     shape => callback.shape(shape)  
+                  )
+                  let url=window.location.protocol+"//"+window.location.host+"/views/whiteboard.html?"+boardId
+                  document.getElementById("board_link").value=url
+                  socket.send(JSON.stringify({"uid":uid,"boardid":boardId,"action":"openboard"}))
+                  }
+               ) 
+         }
+      else {
+         console.log("New board")
+         getRequest("/newboard","json")
+            .then(resp => {
+                  let boardId=resp["boardId"]
+                  let url=window.location.protocol+"//"+window.location.host+"/views/whiteboard.html?"+boardId
+                  window.location.href=url
+                  }
+               ) 
+         }
+      }
 
    socket.onmessage = function(e) {
       if (typeof e.data == "string") {
@@ -47,7 +73,6 @@ window.onload = function() {
                   callback.clean(msg["uid"])
                   callback.shape(msg)
                   }
-   
             }
       }
    }
@@ -57,6 +82,7 @@ window.onload = function() {
       socket = null
       isopen = false
    }
+
 }
 
 function sendPosition(uid,x,y,action,shape,color) {
