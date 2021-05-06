@@ -50,7 +50,7 @@ class ShapeServer(object):
             self.remove_user(uid)
 
     async def send_all_board_users(self,boardId,msg,omitUser=None):
-        boardusers=[uid for uid in self.users.keys() if uid!=omitUser and self.userboard[uid].boardId==boardId]
+        boardusers=[uid for uid in self.users.keys() if uid!=omitUser and self.userboard.get(uid,None).boardId==boardId]
         await asyncio.gather(*[self.send_user(uid,msg) for uid in boardusers])
 
     async def process_message(self,msg,websocket):
