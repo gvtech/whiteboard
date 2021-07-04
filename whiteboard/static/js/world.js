@@ -21,11 +21,11 @@ class World {
       this.remotedraw[uid].move(x,y,color)
    }
 
-   keypressed(uid,key,x,y,textmode) {
+   keypressed(uid,key,x,y,textmode,color) {
       if(!(uid in this.remotedraw)) {
-         this.remotedraw[uid]=new Drawing(this.context,this.color)
+         this.remotedraw[uid]=new Drawing(this.context,color)
       }
-      this.remotedraw[uid].keypressed(key,x,y,textmode)
+      this.remotedraw[uid].keypressed(key,x,y,textmode,color)
    }
 
    clear() {
@@ -47,7 +47,7 @@ class World {
       this.remotedraw[msg.uid].shape(msg)
    }
 
-   commandKey(key) {
+   commandKey(key,uid) {
       if (key=="ArrowUp") {
          if (this.textmode=="normal")
             this.textmode="exponent"
@@ -62,7 +62,7 @@ class World {
 
       }
       else if (key=="Backspace") {
-
+         sendUndo(uid)
       }
       else if (key=="Escape") {
 

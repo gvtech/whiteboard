@@ -33,7 +33,7 @@ class Board(object):
     def save(self):
         if self.timestamp>self.lastsave:
             dir=self.rootdir+"/"+self.boardId[:2]
-            makedirs(dir)
+            makedirs(dir,exist_ok=True)
             filename=f"{dir}/{self.boardId[2:]}.json"
             json.dump(self.shapeList,open(filename,"w"))
             self.lastsave=self.timestamp
@@ -42,6 +42,9 @@ class Board(object):
         self.shapeList.append(shape)
         self.timestamp=time()
     
+    def can_undo(self):
+        return len(self.shapeList)>1
+
     def undo(self):
         self.timestamp=time()
         return self.shapeList.pop(-1)

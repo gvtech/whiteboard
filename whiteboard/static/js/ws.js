@@ -67,7 +67,7 @@ window.onload = function() {
                   callback.move(msg["uid"],msg["x"],msg["y"],msg["color"])
                }
                else if (msg["action"]=="keypressed") {
-                  callback.keypressed(msg["uid"],msg["key"],msg["x"],msg["y"],msg["textmode"])
+                  callback.keypressed(msg["uid"],msg["key"],msg["x"],msg["y"],msg["textmode"],msg["color"])
                }
                else if (msg.hasOwnProperty("shape")) {
                   callback.clean(msg["uid"])
@@ -94,11 +94,21 @@ function sendPosition(uid,x,y,action,shape,color) {
    }
 }
 
-function keyPressed(uid,key,x,y,textmode) {
+function sendKeyPressed(uid,key,x,y,textmode,color) {
    if (isopen) {
-      socket.send(JSON.stringify({"uid":uid,"x":x,"y":y,"action":"keypressed","key":key,"textmode":textmode}))
+      socket.send(JSON.stringify({"uid":uid,"x":x,"y":y,"action":"keypressed","key":key,"textmode":textmode,"color":color}))
       console.log("Key sent.")
    } else {
       console.log("Connection not opened.")
    }
 }
+
+function sendUndo(uid) {
+   if (isopen) {
+      socket.send(JSON.stringify({"uid":uid,"action":"undo"}))
+      console.log("Undo sent.")
+   } else {
+      console.log("Connection not opened.")
+   }
+}
+

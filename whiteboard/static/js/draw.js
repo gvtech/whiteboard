@@ -23,9 +23,13 @@ class Drawing{
       this.snake.push([x,y])
       }
 
-   keypressed(key,x,y,textmode) {
+   keypressed(key,x,y,textmode,color) {
       this.snake=[]
-      this.context.lineWidth = 1
+      return this.text(key,x,y,textmode,color)
+   }
+
+   text(txt,x,y,textmode,color) {
+      this.context.lineWidth = (color=="white") ? 3 : 1
       let shift=0
       if (textmode=="normal") {
          this.context.font = '24px Arial'
@@ -39,14 +43,15 @@ class Drawing{
             shift=12
             }
          }
-      this.context.fillText(key, x, y+shift)
-      return this.context.measureText(key).width
+      this.context.fillStyle=color
+      this.context.fillText(txt, x, y+shift)
+      return this.context.measureText(txt).width
    }
 
    clean() {
       if (this.snake.length>0) {
          this.context.beginPath()
-         this.context.strokeStyle = '#ffffff'
+         this.context.strokeStyle = 'white'
          this.context.lineWidth = 2
          let coord=this.snake.shift()
          this.context.moveTo(coord[0],coord[1])   
@@ -62,7 +67,8 @@ class Drawing{
    shape(s) {
       this.context.beginPath()
       this.context.strokeStyle = s.color
-      this.context.lineWidth = 3
+      this.context.lineWidth = (s.color=="white")? 5 : 3
+
       if (s.shape=="rectangle") {
          this.context.strokeRect(s.x, s.y, s.dx, s.dy) 
          }

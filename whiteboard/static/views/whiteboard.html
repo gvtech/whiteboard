@@ -43,12 +43,12 @@ window.addEventListener("keydown", function(event) {
    if (event.key.length==1) {
       let x = world.lastx
       let y = world.lasty
-      let textwidth=world.localsnake.keypressed(event.key,x,y,world.textmode)
-      keyPressed(uid,event.key,x,y,world.textmode)
+      let textwidth=world.localsnake.keypressed(event.key,x,y,world.textmode,world.color)
+      sendKeyPressed(uid,event.key,x,y,world.textmode,world.color)
       world.lastx+=textwidth+1
       }
    else {
-      world.commandKey(event.key)
+      world.commandKey(event.key,uid)
       event.preventDefault()
       } 
     })

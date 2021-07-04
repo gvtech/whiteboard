@@ -21,7 +21,7 @@ class ShapeServer(object):
         return self.boardstore.getBoard(boardId)
 
     def backup_boards(self,loop):
-        print("saving boards")
+#        print("saving boards")
         self.boardstore.backup()
         loop.call_later(60,self.backup_boards,loop)
 
@@ -49,12 +49,18 @@ class ShapeServer(object):
             print("connection closed ",uid,e)
             self.remove_user(uid)
 
+    def iter_board_users(self,boardId):
+        for uid in self.users.keys():
+            if uid in self.userboard:
+                if self.userboard[uid].boardId==boardId:
+                    yield uid
+
     async def send_all_board_users(self,boardId,msg,omitUser=None):
-        boardusers=[uid for uid in self.users.keys() if uid!=omitUser and self.userboard.get(uid,None).boardId==boardId]
+        boardusers=[uid for uid in self.iter_board_users(boardId) if uid!=omitUser]
         await asyncio.gather(*[self.send_user(uid,msg) for uid in boardusers])
 
     async def process_message(self,msg,websocket):
-#        print(msg)
+        print(msg)
         if "uid" in msg:
             curuid=msg["uid"]
             if msg["action"]=="openboard":
@@ -76,6 +82,17 @@ class ShapeServer(object):
                     shape["color"]=msg["color"]
                     curboard.add(shape)
                     await self.send_all_board_users(curboard.boardId,shape)
+
+                elif msg["action"]=="keypressed":
+                    curboard.add(msg)
+                    await self.send_all_board_users(curboard.boardId,msg)
+
+                elif msg["action"]=="undo":
+                    if curboard.can_undo():
+                        lastMsg=curboard.undo()
+                        lastMsg["color"]="white"
+                        await self.send_all_board_users(curboard.boardId,lastMsg)
+
 
                 elif msg["action"]=="train":
                     self.shapeGenerator.train(msg["shape"],self.drawing[curuid])
